@@ -1,5 +1,5 @@
 # Particle Class and so on
-class particle:
+class Particle:
     def __init__(self, pos, vel):
         self.pos = pos
         self.vel = vel
