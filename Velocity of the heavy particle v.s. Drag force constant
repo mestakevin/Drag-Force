@@ -119,7 +119,7 @@ def simulate_drag_force_constant():
 
     # Plot the velocity vs drag force constant (smooth curve)
     plt.figure(figsize=(10, 6))
-    plt.scatter(velocities_sorted, drag_force_constants_sorted, color='green', alpha=0.6, marker='o')
+    plt.scatter(velocities_sorted, drag_force_constants_sorted, color='blue', alpha=0.6, marker='o')
     plt.plot(velocities_sorted, drag_force_constants_sorted, color='darkorange', linestyle='-', linewidth=1)  # Connect the dots with a line
     plt.xlabel('Velocity (m/s)')
     plt.ylabel('Drag Force Constant (N/m/s)')
