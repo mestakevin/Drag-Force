@@ -119,11 +119,11 @@ def simulate_drag_force_constant():
 
     # Plot the velocity vs drag force constant (smooth curve)
     plt.figure(figsize=(10, 6))
-    plt.scatter(velocities_sorted, drag_force_constants_sorted, color='b', alpha=0.6, marker='o')
-    plt.plot(velocities_sorted, drag_force_constants_sorted, color='r', linestyle='-', linewidth=1)  # Connect the dots with a line
+    plt.scatter(velocities_sorted, drag_force_constants_sorted, color='green', alpha=0.6, marker='o')
+    plt.plot(velocities_sorted, drag_force_constants_sorted, color='darkorange', linestyle='-', linewidth=1)  # Connect the dots with a line
     plt.xlabel('Velocity (m/s)')
-    plt.ylabel('Drag Force Constant (Arbitrary Units)')
-    plt.title(f'Velocity vs Drag Force Constant (M = {M})')
+    plt.ylabel('Drag Force Constant (N/m/s)')
+    plt.title(f'Velocity vs Drag Force Constant (Mass = {M})mass')
     plt.grid(True)
 
     # Save the plot with the dynamic filename
