@@ -4,12 +4,13 @@ import matplotlib.pyplot as plt
 # Constants for the simulation
 m = 1  # Mass of each particle (kg)
 dt = 0.1  # Time step for the simulation (s)
-n_particles = 100  # Number of particles
+#n_particles = 100  # Number of particles
 speed_range = 5.0  # Speed range for initial particle velocities
 box_size = 10.0  # Size of the simulation box
 
 # Prompt the user for the value of M (how many m the sphere's mass equals)
 M = int(input("Enter the number of particles (M) equivalent to the mass of the sphere (M = how many m): "))
+n_particles = int(input("Enter the number of particles): "))
 
 # Particle class (remains the same as your code)
 class Particle:
@@ -53,44 +54,25 @@ class Interactions:
 
         return velocities, V
 
-# ParticleSimulation class for the movement of particles
-class ParticleSimulation:
-    def __init__(self, n_particles: int, box_size: float = 10.0, speed_range: float = 2.0):
-        self.box_size = box_size
-        self.particles = []
-        for _ in range(n_particles):
-            position = np.random.uniform(0, box_size, 2)
-            angle = np.random.uniform(0, 2 * np.pi)
-            speed = np.random.uniform(0, speed_range)
-            velocity = speed * np.array([np.cos(angle), np.sin(angle)])
-            self.particles.append(Particle(position, velocity))
-    
-    def update(self, dt: float = 0.1):
-        """Update positions of particles and apply wall collisions"""
-        for particle in self.particles:
-            particle.position += particle.velocity * dt
-            for i in range(2):
-                if particle.position[i] <= 0 or particle.position[i] >= self.box_size:
-                    particle.position[i] = np.clip(particle.position[i], 0, self.box_size)
-                    particle.velocity[i] *= -1
-            particle.history.append(particle.position.copy())
-    
-    def simulate(self, steps: int = 100):
-        """Run the simulation for a given number of steps"""
-        for _ in range(steps):
-            self.update()
+# Function to simulate the velocity and drag force constant over time for the sphere, considering temperature and air density
+def simulate_drag_force_constant_with_density():
+    # Constants for air and environment
+    P = 101325  # Pressure in Pascals (constant, sea level)
+    R = 287.05  # Specific gas constant for air (J/kg·K)
+    T = 300  # Temperature in Kelvin (initial value)
 
-# Function to simulate the velocity and drag force constant over time for the sphere
-def simulate_drag_force_constant():
     # Initialize interactions and velocity
     interactions = Interactions(M=M, m=1)
     velocity = np.array([5.0, 0.0])  # Initial velocity of the sphere (m/s)
     velocities = []  # List to store velocities for plotting
     drag_force_coefficient = []  # List to store drag force constants for plotting
-    time = 0  # Initial time
+    air_density_values = []  # To store air density values
 
     # Simulate the motion of the sphere under drag force
     for t in range(100):
+        # Calculate air density based on temperature
+        air_density = P / (R * T)
+
         # Simulate a random set of velocities for the particles
         particle_velocities = np.random.uniform(-2, 2, size=(n_particles, 2))  # Random particle velocities
         
@@ -100,36 +82,39 @@ def simulate_drag_force_constant():
         # Calculate the velocity change of the sphere
         delta_velocity = np.linalg.norm(final_velocity - velocity)
 
-        # Calculate drag force constant: assume it scales with the velocity squared (common model for drag)
-        # Drag force coefficient = 0.5 * C_d * rho * A (approximation)
-        # Here we simulate it as proportional to velocity squared
-        drag_force_constant = np.linalg.norm(final_velocity)**2  # This is an assumption for drag constant
+        # Calculate drag force constant
+        # Drag force coefficient = 0.5 * C_d * rho * A (simplified as proportional to rho * v^2)
+        drag_force_constant = air_density * np.linalg.norm(final_velocity)**2
 
-        # Store the velocity and drag force constant for plotting
+        # Store the velocity, air density, and drag force constant for plotting
         velocities.append(np.linalg.norm(final_velocity))
         drag_force_coefficient.append(drag_force_constant)
+        air_density_values.append(air_density)
 
-        # Update velocity for the next iteration
+        # Update velocity and temperature (simulate cooling or heating)
         velocity = final_velocity
+        T -= 0.5  # Example: Decrease temperature over time (cooling)
 
-    # Sort the data points by velocity to avoid back-and-forth lines
+    # Sort the data points by velocity
     sorted_indices = np.argsort(velocities)
     velocities_sorted = np.array(velocities)[sorted_indices]
     drag_force_coefficient_sorted = np.array(drag_force_coefficient)[sorted_indices]
+    air_density_sorted = np.array(air_density_values)[sorted_indices]
 
-    # Plot the velocity vs drag force constant (smooth curve)
+    # Plot the velocity vs drag force constant with air density and temperature
     plt.figure(figsize=(10, 6))
-    plt.scatter(velocities_sorted, drag_force_coefficient_sorted, color='blue', alpha=0.6, marker='o')
-    plt.plot(velocities_sorted, drag_force_coefficient_sorted, color='darkorange', linestyle='-', linewidth=1)  # Connect the dots with a line
+    scatter = plt.scatter(velocities_sorted, drag_force_coefficient_sorted, c=air_density_sorted, cmap='viridis', marker='o', alpha=0.7)
+    plt.colorbar(scatter, label='Air Density (kg/m³)')
+    plt.plot(velocities_sorted, drag_force_coefficient_sorted, color='darkorange', linestyle='-', linewidth=1)
     plt.xlabel('Velocity (m/s)')
-    plt.ylabel('Drag Force Constant (N/m/s)')
-    plt.title(f'Velocity vs Drag Force Constant (Mass = {M})mass')
+    plt.ylabel('Drag Force Constant (N·s/m²)')
+    plt.title(f'Velocity vs Drag Force Constant (Mass = {M}, T varies)')
     plt.grid(True)
 
     # Save the plot with the dynamic filename
-    filename = f"velocity_vs_drag_force_constant_M_{M}.png"
+    filename = f"velocity_vs_drag_force_constant_with_density_M_{M}.png"
     plt.savefig(filename)
     plt.show()
 
 # Run the simulation
-simulate_drag_force_constant()
+simulate_drag_force_constant_with_density()
