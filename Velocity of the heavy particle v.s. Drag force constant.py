@@ -86,7 +86,7 @@ def simulate_drag_force_constant():
     interactions = Interactions(M=M, m=1)
     velocity = np.array([5.0, 0.0])  # Initial velocity of the sphere (m/s)
     velocities = []  # List to store velocities for plotting
-    drag_force_constants = []  # List to store drag force constants for plotting
+    drag_force_coefficient = []  # List to store drag force constants for plotting
     time = 0  # Initial time
 
     # Simulate the motion of the sphere under drag force
@@ -101,13 +101,13 @@ def simulate_drag_force_constant():
         delta_velocity = np.linalg.norm(final_velocity - velocity)
 
         # Calculate drag force constant: assume it scales with the velocity squared (common model for drag)
-        # Drag force constant = 0.5 * C_d * rho * A (approximation)
+        # Drag force coefficient = 0.5 * C_d * rho * A (approximation)
         # Here we simulate it as proportional to velocity squared
         drag_force_constant = np.linalg.norm(final_velocity)**2  # This is an assumption for drag constant
 
         # Store the velocity and drag force constant for plotting
         velocities.append(np.linalg.norm(final_velocity))
-        drag_force_constants.append(drag_force_constant)
+        drag_force_coefficient.append(drag_force_constant)
 
         # Update velocity for the next iteration
         velocity = final_velocity
@@ -115,12 +115,12 @@ def simulate_drag_force_constant():
     # Sort the data points by velocity to avoid back-and-forth lines
     sorted_indices = np.argsort(velocities)
     velocities_sorted = np.array(velocities)[sorted_indices]
-    drag_force_constants_sorted = np.array(drag_force_constants)[sorted_indices]
+    drag_force_coefficient_sorted = np.array(drag_force_coefficient)[sorted_indices]
 
     # Plot the velocity vs drag force constant (smooth curve)
     plt.figure(figsize=(10, 6))
-    plt.scatter(velocities_sorted, drag_force_constants_sorted, color='blue', alpha=0.6, marker='o')
-    plt.plot(velocities_sorted, drag_force_constants_sorted, color='darkorange', linestyle='-', linewidth=1)  # Connect the dots with a line
+    plt.scatter(velocities_sorted, drag_force_coefficient_sorted, color='blue', alpha=0.6, marker='o')
+    plt.plot(velocities_sorted, drag_force_coefficient_sorted, color='darkorange', linestyle='-', linewidth=1)  # Connect the dots with a line
     plt.xlabel('Velocity (m/s)')
     plt.ylabel('Drag Force Constant (N/m/s)')
     plt.title(f'Velocity vs Drag Force Constant (Mass = {M})mass')
