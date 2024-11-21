@@ -38,3 +38,13 @@ class interactions:
         Vy = np.sum(Mvy)
         V = [Vx,Vy]
         return velocities, V
+
+    def drag(Vi,dt):
+        '''
+        To calculate the force introduced by interactions.
+        '''
+        vi = Vi
+        vf = V
+        F = M*(vf-vi)/dt  
+        Fd = np.dot(F,vi/abs(vi))
+        return Fd
