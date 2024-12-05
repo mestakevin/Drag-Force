@@ -105,7 +105,7 @@ def simulate_drag_force_constant_with_density():
     plt.figure(figsize=(10, 6))
     scatter = plt.scatter(velocities_sorted, drag_force_coefficient_sorted, c=air_density_sorted, cmap='viridis', marker='o', alpha=0.7)
     plt.colorbar(scatter, label='Temperature coefficient (K)')
-    plt.plot(velocities_sorted, drag_force_coefficient_sorted, color='darkorange')
+    plt.plot(velocities_sorted, drag_force_coefficient_sorted)
     plt.xlabel('Velocity (m/s)')
     plt.ylabel('Drag Force Constant (N·s/m²)')
     plt.title(f'Velocity vs Drag Force Constant (Mass = {M}, T varies)')
